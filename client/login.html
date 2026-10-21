@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – StudySync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-wrap">
+    <!-- Left: brand panel -->
+    <div class="auth-side">
+      <div class="brand">
+        <div class="brand-logo">S</div>
+        <div>
+          <h1>StudySync</h1>
+          <p>Student Academic Planner</p>
+        </div>
+      </div>
+      <h2>Stay on top of your semester.</h2>
+      <ul class="auth-points">
+        <li>✅ Track attendance and the 75% rule</li>
+        <li>📅 Never miss an assignment deadline</li>
+        <li>📊 See your progress with clear charts</li>
+      </ul>
+    </div>
+
+    <!-- Right: forms -->
+    <div class="auth-card">
+      <a class="back-home" href="index.html">← Back to home</a>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Login</button>
+        <button class="auth-tab" data-tab="register">Register</button>
+      </div>
+
+      <!-- Login -->
+      <form id="loginForm" class="auth-form" novalidate>
+        <h3>Welcome back 👋</h3>
+        <p class="muted small">Log in to see your dashboard.</p>
+        <div class="success-msg" id="loginSuccess" hidden></div>
+        <div class="field">
+          <label for="loginEmail">Gmail address</label>
+          <input type="email" id="loginEmail" autocomplete="email" placeholder="yourname@gmail.com" required>
+        </div>
+        <div class="field">
+          <div class="label-row">
+            <label for="loginPassword">Password</label>
+            <a class="forgot-link" id="forgotLink" href="reset-password.html">Forgot password?</a>
+          </div>
+          <div class="password-box">
+            <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Your password" required>
+            <button type="button" class="show-pass" data-target="loginPassword">Show</button>
+          </div>
+        </div>
+        <p class="error" id="loginError"></p>
+        <button type="submit" class="btn primary full-btn">Login</button>
+        <p class="auth-switch">New here? <button type="button" class="link-btn" data-tab="register">Create an account</button></p>
+      </form>
+
+      <!-- Register -->
+      <form id="registerForm" class="auth-form" novalidate hidden>
+        <h3>Create your account</h3>
+        <p class="muted small">We'll send a code to your Gmail to confirm it's really yours.</p>
+        <div class="field">
+          <label for="regName">Full name *</label>
+          <input type="text" id="regName" maxlength="50" autocomplete="name" placeholder="e.g. Priya Sharma" required>
+        </div>
+        <div class="field">
+          <label for="regEmail">Gmail address *</label>
+          <input type="email" id="regEmail" maxlength="100" autocomplete="email" placeholder="yourname@gmail.com" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="regCourse">Course</label>
+            <input type="text" id="regCourse" maxlength="60" placeholder="e.g. BCA">
+          </div>
+          <div class="field">
+            <label for="regYear">Year</label>
+            <select id="regYear">
+              <option value="">Select</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="regCollege">College</label>
+          <input type="text" id="regCollege" maxlength="80" placeholder="e.g. City College">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="regPassword">Password *</label>
+            <div class="password-box">
+              <input type="password" id="regPassword" autocomplete="new-password" placeholder="At least 6 characters" required>
+              <button type="button" class="show-pass" data-target="regPassword">Show</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="regConfirm">Confirm password *</label>
+            <input type="password" id="regConfirm" autocomplete="new-password" placeholder="Type it again" required>
+          </div>
+        </div>
+        <p class="error" id="registerError"></p>
+        <button type="submit" class="btn primary full-btn">Send Verification Code</button>
+        <p class="auth-switch">Already registered? <button type="button" class="link-btn" data-tab="login">Log in</button></p>
+      </form>
+
+      <!-- Verify email (shown after "Send Verification Code") -->
+      <form id="verifyForm" class="auth-form" novalidate hidden>
+        <div class="verify-icon">✉️</div>
+        <h3>Check your Gmail</h3>
+        <p class="muted small">We sent a 6-digit code to <strong id="verifyEmail"></strong>. Enter it below to finish creating your account. The code expires in 10 minutes.</p>
+        <div class="field">
+          <label for="verifyCode">Verification code</label>
+          <input type="text" id="verifyCode" class="code-input" inputmode="numeric" autocomplete="one-time-code"
+                 maxlength="6" placeholder="••••••" required>
+        </div>
+        <p class="error" id="verifyError"></p>
+        <button type="submit" class="btn primary full-btn">Verify &amp; Create Account</button>
+        <p class="auth-switch">
+          Didn't get it? Check Spam, or
+          <button type="button" class="link-btn" id="resendBtn">Resend code</button>
+        </p>
+        <p class="auth-switch"><button type="button" class="link-btn" id="changeEmailBtn">← Use a different email</button></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="auth.js"></script>
+</body>
+</html>

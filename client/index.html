@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudySync – Student Academic Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="home-body">
+
+  <!-- ===== Top navigation ===== -->
+  <header class="home-nav">
+    <a class="brand" href="index.html">
+      <div class="brand-logo" style="color:#fff">S</div>
+      <div>
+        <h1>StudySync</h1>
+        <p>Student Academic Planner</p>
+      </div>
+    </a>
+    <div class="home-nav-links" id="navLinks">
+      <a class="btn ghost" href="login.html">Login</a>
+      <a class="btn primary" href="login.html?tab=register">Register</a>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div>
+      <span class="hero-badge">🎓 Made for degree students</span>
+      <h2>Plan smarter. <span>Never miss</span> a class or deadline.</h2>
+      <p>StudySync keeps your attendance above 75% and reminds you before every assignment is due, all in one simple dashboard.</p>
+      <div class="btn-row" id="heroButtons">
+        <a class="btn primary" href="login.html?tab=register">Get Started – It's Free</a>
+        <a class="btn ghost" href="login.html">I have an account</a>
+      </div>
+    </div>
+
+    <!-- Small picture of the dashboard -->
+    <div class="hero-preview" aria-hidden="true">
+      <div class="preview-row">
+        <div class="preview-card">
+          <small>Attendance</small>
+          <b>82.5%</b>
+          <div class="progress"><div class="progress-fill good" style="width:82.5%"></div></div>
+        </div>
+        <div class="preview-card">
+          <small>Pending</small>
+          <b>3</b>
+          <div class="progress"><div class="progress-fill" style="width:40%"></div></div>
+        </div>
+      </div>
+      <div class="preview-card">
+        <small>Subject-wise attendance</small>
+        <div class="preview-bars">
+          <i class="green" style="height:85%"></i>
+          <i class="green" style="height:78%"></i>
+          <i class="red" style="height:62%"></i>
+          <i class="green" style="height:92%"></i>
+          <i class="green" style="height:80%"></i>
+        </div>
+      </div>
+      <div class="banner orange" style="margin:0">⏰ <span><strong>Your assignment is due tomorrow!</strong></span></div>
+    </div>
+  </section>
+
+  <!-- ===== Features ===== -->
+  <section class="features">
+    <div class="section-title">
+      <h3>Everything you need for the semester</h3>
+      <p>Simple tools that save you from attendance shortage and late submissions.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h4>Attendance Calculator</h4>
+        <p>See your percentage, how many classes you can miss, or how many you must attend to reach 75%.</p>
+      </div>
+      <div class="feature">
+        <div class="stat-icon orange">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <h4>Deadline Reminders</h4>
+        <p>Get "due tomorrow", "due today" and "deadline passed" alerts for every assignment.</p>
+      </div>
+      <div class="feature">
+        <div class="stat-icon purple">
+          <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+        </div>
+        <h4>Charts &amp; Dashboard</h4>
+        <p>Bar charts and progress rings show your attendance and assignment status at a glance.</p>
+      </div>
+      <div class="feature">
+        <div class="stat-icon green">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <h4>Deadline Calendar</h4>
+        <p>A month view of all your submission dates so you can plan your week.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== How it works ===== -->
+  <section class="steps">
+    <div class="section-title">
+      <h3>How it works</h3>
+      <p>Start in less than a minute.</p>
+    </div>
+    <div class="step-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Register</h4>
+        <p>Create your account with your Gmail address.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Add your details</h4>
+        <p>Enter your classes and assignment deadlines.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Stay on track</h4>
+        <p>Check your dashboard and follow the reminders.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Call to action ===== -->
+  <section class="cta">
+    <h3>Ready to take control of your semester?</h3>
+    <p>Free to use. Your data stays private to your account.</p>
+    <a class="btn primary" id="ctaBtn" href="login.html?tab=register">Create Free Account</a>
+  </section>
+
+  <footer class="home-footer">
+    © <span id="year"></span> StudySync – Student Academic Planner
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Already logged in? Show "Go to Dashboard" instead of Login / Register
+    let loggedIn = false;
+    try { loggedIn = !!localStorage.getItem("studysync_token"); } catch (e) {}
+    if (loggedIn) {
+      document.getElementById("navLinks").innerHTML =
+        '<a class="btn primary" href="dashboard.html">Go to Dashboard</a>';
+      document.getElementById("heroButtons").innerHTML =
+        '<a class="btn primary" href="dashboard.html">Open My Dashboard</a>';
+      const cta = document.getElementById("ctaBtn");
+      cta.textContent = "Open My Dashboard";
+      cta.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>
