@@ -1,8 +1,8 @@
 /* =========================================
    Copy your local data (data/db.json) into MongoDB
 
-   Run once, from the server folder, after putting MONGODB_URI in server/.env:
-     node migrate-to-mongo.js
+   Run once, from the project folder, after putting MONGODB_URI in server/.env:
+     npm run migrate
 
    Accounts that already exist in MongoDB (same email) are skipped,
    so running it twice is safe.

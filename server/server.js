@@ -287,12 +287,11 @@ function isGmail(email) {
 }
 const GMAIL_ERROR = "Please enter a valid Gmail address (example: yourname@gmail.com).";
 
-// Today's date as YYYY-MM-DD (set TZ=Asia/Kolkata when hosting so "today" matches India)
+// Today's date as YYYY-MM-DD in India time, even when the host's clock is UTC
+const APP_TIMEZONE = process.env.APP_TIMEZONE || "Asia/Kolkata";
 function todayStr() {
-  const d = new Date();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${m}-${day}`;
+  // "en-CA" formats dates as YYYY-MM-DD
+  return new Intl.DateTimeFormat("en-CA", { timeZone: APP_TIMEZONE }).format(new Date());
 }
 
 function isValidDateStr(str) {
@@ -787,19 +786,37 @@ app.use((err, req, res, next) => {
 });
 
 /* =========================================
-   Start the server (after the database is ready)
+   Start
    ========================================= */
-store.init()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`StudySync server running at http://localhost:${PORT}`);
-      console.log(`Data is stored in: ${store.name}`);
-      if (EMAIL_METHOD === "brevo") console.log(`Emails are sent with Brevo from ${EMAIL_FROM}`);
-      else if (EMAIL_METHOD === "gmail") console.log(`Emails are sent from ${EMAIL_FROM}`);
-      else console.log("Email is not set up (see server/.env.example). Codes will be printed here instead.");
+// Connect to the database once; later calls reuse the same connection
+let readyPromise = null;
+function ready() {
+  if (!readyPromise) {
+    readyPromise = store.init().catch(err => {
+      readyPromise = null; // try again on the next request
+      throw err;
     });
-  })
-  .catch(err => {
-    console.error("Could not connect to the database:", err.message);
-    process.exit(1);
-  });
+  }
+  return readyPromise;
+}
+
+// Used by Vercel (api/index.js), which runs the app without app.listen()
+module.exports = { app, ready };
+
+// "npm start" on your own computer: start a normal server
+if (require.main === module) {
+  ready()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`StudySync server running at http://localhost:${PORT}`);
+        console.log(`Data is stored in: ${store.name}`);
+        if (EMAIL_METHOD === "brevo") console.log(`Emails are sent with Brevo from ${EMAIL_FROM}`);
+        else if (EMAIL_METHOD === "gmail") console.log(`Emails are sent from ${EMAIL_FROM}`);
+        else console.log("Email is not set up (see server/.env.example). Codes will be printed here instead.");
+      });
+    })
+    .catch(err => {
+      console.error("Could not connect to the database:", err.message);
+      process.exit(1);
+    });
+}

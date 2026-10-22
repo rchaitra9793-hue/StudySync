@@ -20,17 +20,17 @@ StudySync/
 │   ├── server.js           # API routes, login, emails
 │   ├── store.js            # Data storage: MongoDB online, data/db.json on your computer
 │   ├── migrate-to-mongo.js # Copies data/db.json into MongoDB
-│   ├── .env.example        # Settings template (copy to .env)
-│   └── package.json
-└── render.yaml             # Deploy settings for Render
+│   └── .env.example        # Settings template (copy to .env)
+├── api/index.js            # Runs the server on Vercel
+├── vercel.json             # Vercel settings
+└── package.json
 ```
 
 ## Run on your own computer
 
-You need [Node.js](https://nodejs.org) 22 or newer.
+You need [Node.js](https://nodejs.org) 22 or newer. In the project folder:
 
 ```bash
-cd server
 npm install
 npm start
 ```
@@ -44,8 +44,8 @@ Copy `server/.env.example` to `server/.env` and fill in what you need:
 | Setting | What it's for |
 |---|---|
 | `MONGODB_URI` | MongoDB connection string. Empty = use `data/db.json` |
-| `BREVO_API_KEY`, `EMAIL_FROM` | Send emails with Brevo (needed on Render's free plan) |
-| `SMTP_USER`, `SMTP_PASS` | Send emails with Gmail + App Password (works locally) |
+| `SMTP_USER`, `SMTP_PASS` | Send emails with Gmail + App Password (works locally and on Vercel) |
+| `BREVO_API_KEY`, `EMAIL_FROM` | Optional: send emails with Brevo instead of Gmail |
 
 With no email set up, verification and reset codes are printed in the server terminal.
 
@@ -58,33 +58,27 @@ With no email set up, verification and reset codes are printed in the server ter
 - After 10 wrong passwords, that email is locked for 15 minutes.
 - Passwords are hashed with `crypto.scrypt`. Logins last 7 days.
 
-## Deploy (Render + MongoDB Atlas + Brevo, all free)
+## Deploy for free (Vercel + MongoDB Atlas + Gmail)
 
-**1. Database – MongoDB Atlas**
-1. Sign up at https://www.mongodb.com/cloud/atlas/register and create a free **M0** cluster.
-2. *Database Access* → add a user with a password.
-3. *Network Access* → add IP address `0.0.0.0/0` (lets Render connect).
+**1. Database – MongoDB Atlas (free M0)**
+1. Sign up at https://www.mongodb.com/cloud/atlas/register and create a free **M0** cluster (region: Mumbai).
+2. *Database Access* → add a database user with a password.
+3. *Network Access* → add IP address `0.0.0.0/0` (lets Vercel connect).
 4. *Connect → Drivers* → copy the connection string and put your password in it.
 
-**2. Email – Brevo** (Render's free plan blocks Gmail's ports)
-1. Sign up at https://www.brevo.com.
-2. *Senders, Domains & Dedicated IPs → Senders* → add and verify your Gmail address.
-3. *SMTP & API → API Keys* → create a key.
+**2. Website – Vercel (free Hobby plan)**
+1. Sign up at https://vercel.com with your GitHub account.
+2. *Add New → Project* → import the `StudySync` repository. Leave the settings as they are.
+3. Under *Environment Variables* add:
+   - `MONGODB_URI` – the string from step 1
+   - `SMTP_USER` – your Gmail address
+   - `SMTP_PASS` – your Gmail App Password
+4. Click *Deploy*. Your site is live at `https://<project>.vercel.app`.
 
-**3. Code – GitHub**
-1. Create an empty repository at https://github.com/new.
-2. Push this folder to it (`.env` and `db.json` are ignored, so no secrets are uploaded).
+**3. (Optional) Move your existing accounts**
+Put `MONGODB_URI` in `server/.env`, then run `npm run migrate` in the project folder.
 
-**4. Website – Render**
-1. Sign up at https://render.com with GitHub.
-2. *New → Blueprint* → pick your repository. Render reads `render.yaml`.
-3. Fill in `MONGODB_URI`, `BREVO_API_KEY` and `EMAIL_FROM` when asked, then deploy.
-4. Your site is live at `https://studysync-xxxx.onrender.com`.
-
-**5. (Optional) Move your existing accounts**
-Put `MONGODB_URI` in `server/.env`, then run `npm run migrate` in the `server` folder.
-
-Note: on Render's free plan the site sleeps after 15 minutes without visitors; the first visit after that takes about a minute to wake up.
+Note: Vercel starts the server fresh when needed, so the "10 wrong passwords" lock may reset sooner than 15 minutes.
 
 ## API
 

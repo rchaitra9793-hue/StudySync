@@ -1,0 +1,20 @@
+{
+  "name": "studysync",
+  "version": "1.0.0",
+  "description": "StudySync – Student Academic Planner",
+  "private": true,
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "migrate": "node server/migrate-to-mongo.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongodb": "^7.7.0",
+    "nodemailer": "^10.1.7"
+  }
+}
