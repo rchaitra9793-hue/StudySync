@@ -5,13 +5,34 @@
    ========================================= */
 
 const { app, ready } = require("../server/server");
+const { mongoUri } = require("../server/store");
+
+function sendJson(res, status, body) {
+  res.statusCode = status;
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Cache-Control", "no-store");
+  res.end(JSON.stringify(body));
+}
+
+// Helps find setup mistakes. Shows only NAMES of settings, never their values.
+function setupInfo() {
+  return {
+    deployment: (process.env.VERCEL_GIT_COMMIT_SHA || "").slice(0, 7) || "unknown",
+    environment: process.env.VERCEL_ENV || "unknown",
+    settingsFound: Object.keys(process.env)
+      .filter(name => /MONGO|SMTP|BREVO|EMAIL/i.test(name))
+      .sort()
+      .map(name => (process.env[name] || "").trim() ? name : `${name} (empty)`)
+  };
+}
 
 module.exports = async (req, res) => {
   // On Vercel the files are read-only, so data must go to MongoDB
-  if (!process.env.MONGODB_URI) {
-    res.statusCode = 500;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "The database is not set up. Add MONGODB_URI in Vercel → Settings → Environment Variables." }));
+  if (!mongoUri()) {
+    sendJson(res, 500, {
+      error: "The database is not set up. Add MONGODB_URI in Vercel → Settings → Environment Variables (Production), then redeploy.",
+      ...setupInfo()
+    });
     return;
   }
 
@@ -19,9 +40,13 @@ module.exports = async (req, res) => {
     await ready(); // connect to MongoDB (only the first time)
   } catch (err) {
     console.error("Could not connect to the database:", err.message);
-    res.statusCode = 503;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "Could not connect to the database. Please try again in a moment." }));
+    // Common causes, without showing the connection string itself
+    let hint = "Check the MONGODB_URI value in Vercel.";
+    if (/auth|password|credential/i.test(err.message)) hint = "MongoDB rejected the username or password inside MONGODB_URI.";
+    else if (/ENOTFOUND|querySrv|ENODATA/i.test(err.message)) hint = "The cluster address inside MONGODB_URI looks wrong.";
+    else if (/timed out|ECONNREFUSED|Server selection/i.test(err.message)) hint = "MongoDB did not answer. Check Network Access allows 0.0.0.0/0.";
+    else if (/Invalid scheme|Invalid connection string|URI/i.test(err.message)) hint = "MONGODB_URI is not a valid mongodb+srv:// link.";
+    sendJson(res, 503, { error: "Could not connect to the database. " + hint, ...setupInfo() });
     return;
   }
 

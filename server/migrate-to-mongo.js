@@ -14,10 +14,10 @@ try {
   process.loadEnvFile(path.join(__dirname, ".env"));
 } catch (e) { /* no .env file */ }
 
-const { createStore, createFileStore } = require("./store");
+const { createStore, createFileStore, mongoUri } = require("./store");
 
 async function main() {
-  if (!process.env.MONGODB_URI) {
+  if (!mongoUri()) {
     console.error("MONGODB_URI is not set. Add it to server/.env first.");
     process.exit(1);
   }

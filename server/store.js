@@ -170,7 +170,8 @@ function createFileStore(file) {
    ========================================= */
 function createMongoStore(uri) {
   const { MongoClient } = require("mongodb");
-  const client = new MongoClient(uri);
+  // Give up after 10 seconds instead of waiting forever if MongoDB can't be reached
+  const client = new MongoClient(uri, { serverSelectionTimeoutMS: 10000, connectTimeoutMS: 10000 });
   let users, sessions, codes, data;
   const noId = { projection: { _id: 0 } }; // don't send MongoDB's own _id field around
 
@@ -267,10 +268,21 @@ function createMongoStore(uri) {
 /* =========================================
    Pick the storage to use
    ========================================= */
+// The MongoDB connection string. MONGODB_URI is the main name; a few common
+// spellings are accepted too, and stray spaces or quotes are removed.
+function mongoUri() {
+  const names = ["MONGODB_URI", "MONGO_URI", "MONGODB_URL", "MONGO_URL"];
+  for (const name of names) {
+    const value = (process.env[name] || "").trim().replace(/^["']|["']$/g, "");
+    if (value) return value;
+  }
+  return "";
+}
+
 function createStore() {
-  if (process.env.MONGODB_URI) return createMongoStore(process.env.MONGODB_URI);
+  if (mongoUri()) return createMongoStore(mongoUri());
   const file = process.env.DATA_FILE || path.join(__dirname, "data", "db.json");
   return createFileStore(file);
 }
 
-module.exports = { createStore, createFileStore, withDefaults };
+module.exports = { createStore, createFileStore, withDefaults, mongoUri };
